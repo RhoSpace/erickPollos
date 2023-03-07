@@ -8,7 +8,7 @@ import { ProductApi } from '../../models/product.model';
 })
 export class ProductService {
 
-  private urlApi = 'http://localhost:9000/';
+  private urlApi = 'http://microserviciocrud-atlas-production.up.railway.app/';
   private http = inject(HttpClient); 
 
   constructor(
