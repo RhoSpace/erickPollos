@@ -28,7 +28,7 @@
           <button mat-fab color="warn" aria-label="Delete" (click)="deleteProductById(element._id)">
             <mat-icon>delete</mat-icon>
           </button>
-          <button mat-fab color="accent" aria-label="Update" (click)="openXl(content)">
+          <button mat-fab color="accent" aria-label="Update">
             <mat-icon>update</mat-icon>
           </button>
         </td>
@@ -58,53 +58,3 @@
 
 
 
-
-<!-- Modal angular-bootstrap -->
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Actualizar datos</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-
-  <div class="modal-body">
-
-    <form class="container">
-      <div class="row">
-        <div class="col-6">
-          <label for="dateOfBirth">Date of birth</label>
-          <div class="input-group">
-            <input id="dateOfBirth" class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
-              #dp="ngbDatepicker" />
-            <button class="btn btn-outline-secondary bi bi-calendar3" (click)="dp.toggle()" type="button"></button>
-          </div>
-        </div>
-
-        <!--Dropdown-->
-        <div ngbDropdown class="col-6">
-          <button type="button" class="btn btn-outline-primary" id="dropdown1" ngbDropdownToggle>Toggle
-            dropdown</button>
-          <div ngbDropdownMenu aria-labelledby="dropdown1">
-            <!-- items as buttons -->
-            <button ngbDropdownItem>Button (enabled)</button>
-            <button ngbDropdownItem [disabled]="true">Button (disabled, not focusable)</button>
-            <button ngbDropdownItem [class.disabled]="true" aria-disabled="true">Button (disabled, focusable)</button>
-
-            <!-- items as links -->
-            <a href="#" ngbDropdownItem>Link (enabled)</a>
-            <a href="#" ngbDropdownItem [disabled]="true">Link (disabled, not focusable)</a>
-            <a href="#" ngbDropdownItem [class.disabled]="true" aria-disabled="true">Link (disabled, focusable)</a>
-          </div>
-        </div>
-      </div>
-    </form>
-
-  </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
-  </div>
-</ng-template>
-
-<hr />
-
-<pre hidden>{{ closeResult }}</pre>
