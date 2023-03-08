@@ -8,7 +8,7 @@ import { ProductApi } from '../../models/product.model';
 })
 export class ProductService {
 
-  private urlApi = 'https://scintillating-lily-104ccc.netlify.app/';
+  private urlApi = 'https://microserviciocrud-atlas-production.up.railway.app/';
   private http = inject(HttpClient); 
 
   constructor(
