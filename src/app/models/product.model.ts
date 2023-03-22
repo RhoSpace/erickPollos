@@ -1,6 +1,8 @@
 export interface ProductApi {
-    _id: string;
+    _id?: string;
     Linea: string;
     Codigo: string;
-    Tp: string;
+    Producto: string;
+    Precio: number;
+    Cantidad: number;
 }

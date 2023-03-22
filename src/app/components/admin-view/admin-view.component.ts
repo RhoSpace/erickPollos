@@ -5,6 +5,8 @@ import { ProductApi } from 'src/app/models/product.model';
 import * as XLSX from 'xlsx';
 import { ProductService } from 'src/app/services/productService/product.service';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-view',
@@ -14,14 +16,16 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 export class AdminViewComponent implements AfterViewInit, OnInit {
 
-  closeResult = '';
-
+  public showInput: boolean = true;
   public product: ProductApi | any = {};
   public multidimensionalReadExcel: [][] | undefined;
   public ExcelDataJson: any;
 
+  public amountProductCtrl: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
+  Validators.required, Validators.pattern("^[1-9]$")]);
+
   // Angular material table with pagination
-  displayedColumns: string[] = ['Linea', 'Codigo', 'Tp', '_id',];
+  displayedColumns: string[] = ['Linea', 'Codigo', 'Producto', 'Precio', 'Cantidad', '_id',];
   dataSource = new MatTableDataSource<ProductApi>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -31,12 +35,18 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
   }
 
   constructor(
+    private router: Router,
     private productService: ProductService,
     private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
-    this.getAllProducts();
+    this.getAllProducts()
+
+    // if(this.dataSource.data == undefined ){
+    //   this.showInput = false;
+    // }
+
   }
 
   //Buscar datos en api conectada a la base de datos atlas mongodb 
@@ -46,7 +56,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
         this.dataSource.data = res;
       },
       error: (err) => {
-        console.error(`Hemos tenido un error: ${err}`)
+        console.error(`Hemos tenido un error: ${err}`);
       },
       complete: () => console.info("Realizado con exito")
     })
@@ -71,6 +81,9 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
       this.prepareProductsOneByOne(copiaSinCabecera);
     };
     reader.readAsBinaryString(target.files[0]);
+
+    this.showInput = false;
+   
   }
 
   //RECORRER EL ARREGLO PARA ENVIAR A LA API EL JSON
@@ -91,12 +104,19 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
             break
 
           case 2:
-            this.product.Tp = elemento;
+            this.product.Producto = elemento;
+            break
+
+          case 3:
+            this.product.Precio = elemento;
+            break
+
+          case 4:
+            this.product.Cantidad = elemento;
             break
         }
 
       })
-
       this.saveProduct();
     })
     this.product = {};
@@ -124,7 +144,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
       this.product = dataDelete;
       this.deleteProduct();
     })
-    this.dataSource.data = [];
+    // this.dataSource.data = [];
     this.refresh();
   }
 
@@ -159,30 +179,46 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
   //REFRESCAR INFORMACIÓN
   refresh(): void { window.location.reload(); }
 
+  //ACTUALIZAR DATOS ANTES DE GUARDAR JSON A EXCEL
+  downloadExcel() {
+    this.productService.getAllProduct().subscribe({
+      next: (res) => {
+        this.dataSource.data = res;
+      },
+      error: (err) => {
+        console.error(`Hemos tenido un error: ${err}`);
+      },
+      complete: () => this.convertJsonToExcel()
+    })
+  }
+
   //GUARDAR JSON EN EXCEL
   convertJsonToExcel() {
+    this.deleteProductsOneByOne();
+    this.dataSource.data.forEach((item: ProductApi) => {
+      delete item._id;
+    })
+
     const workSheet = XLSX.utils.json_to_sheet(this.dataSource.data);
     const workBook = XLSX.utils.book_new();
 
-    XLSX.utils.book_append_sheet(workBook, workSheet, "students")
+    XLSX.utils.book_append_sheet(workBook, workSheet, "Productos")
     // Generate buffer
     XLSX.write(workBook, { bookType: 'xlsx', type: "buffer" })
 
     // Binary string
     XLSX.write(workBook, { bookType: "xlsx", type: "binary" })
 
-    XLSX.writeFile(workBook, "studentsData.xlsx")
+    XLSX.writeFile(workBook, "newExcel.xlsx")
 
-    this.deleteProductsOneByOne()
     this.refresh();
 
   }
 
-
   //actualizar
-  updateProductById(id: string) {
+  updateProductById(id: string, amount: number) {
     let productAux: ProductApi = this.dataSource.data.filter((obj) => obj._id === id)[0];
-    productAux.Linea = "Caballo";
+    productAux.Cantidad = amount;
     console.log(productAux)
     this.productService.updateProduct(productAux).subscribe({
       next: (res) => {
@@ -197,31 +233,21 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
   }
 
   doLogout() {
-    // this.authService.logout();
-    // this.router.navigateByUrl('login');
+    this.router.navigateByUrl('login');
   }
 
-  openXl(content: any) {
-    this.modalService.open(content, { size: 'xl' }, 
-    // { ariaLabelledBy: 'modal-basic-title' }
+  openModal(content: any) {
+    this.modalService.open(content, { size: 'xl' },
+      // { ariaLabelledBy: 'modal-basic-title' }
     ).result.then(
       (result) => {
-        this.closeResult = `Closed with: ${result}`;
+
       },
       (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        this.ngOnInit();
       },
     );
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
 
 }
