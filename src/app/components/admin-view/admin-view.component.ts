@@ -144,8 +144,6 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
       this.product = dataDelete;
       this.deleteProduct();
     })
-    // this.dataSource.data = [];
-    this.refresh();
   }
 
   //Borrar producto
@@ -162,6 +160,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
     });
   }
 
+  
   deleteProductById(id: string) {
     this.productService.deleteProduct(id).subscribe({
       next: (res) => {
@@ -190,10 +189,12 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
       },
       complete: () => this.convertJsonToExcel()
     })
+    
   }
 
   //GUARDAR JSON EN EXCEL
   convertJsonToExcel() {
+    
     this.deleteProductsOneByOne();
     this.dataSource.data.forEach((item: ProductApi) => {
       delete item._id;
@@ -211,7 +212,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
 
     XLSX.writeFile(workBook, "newExcel.xlsx")
 
-    this.refresh();
+    this.dataSource.data = [];
 
   }
 
