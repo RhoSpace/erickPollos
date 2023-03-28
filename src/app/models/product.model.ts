@@ -5,4 +5,5 @@ export interface ProductApi {
     Producto: string;
     Precio: number;
     Cantidad: number;
+    CortaFecha: number;
 }

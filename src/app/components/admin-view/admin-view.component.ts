@@ -24,8 +24,11 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
   public amountProductCtrl: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
   Validators.required, Validators.pattern("^[1-9]$")]);
 
+  public amountProductCtrl2: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
+    Validators.required, Validators.pattern("^[1-9]$")]);
+
   // Angular material table with pagination
-  displayedColumns: string[] = ['Linea', 'Codigo', 'Producto', 'Precio', 'Cantidad', '_id',];
+  displayedColumns: string[] = ['Linea', 'Codigo', 'Producto', 'Precio', 'Cantidad', 'CortaFecha', '_id',];
   dataSource = new MatTableDataSource<ProductApi>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -49,6 +52,12 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
 
   }
 
+  //Buscador
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   //Buscar datos en api conectada a la base de datos atlas mongodb 
   getAllProducts() {
     this.productService.getAllProduct().subscribe({
@@ -63,7 +72,6 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
   }
 
   //Convertir Excel a JSON
-
   onFileChange(evt: any) {
     const target: DataTransfer = <DataTransfer>(evt.target);
     if (target.files.length !== 1) throw new Error('Cannot use multiple files');
@@ -83,7 +91,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
     reader.readAsBinaryString(target.files[0]);
 
     this.showInput = false;
-   
+
   }
 
   //RECORRER EL ARREGLO PARA ENVIAR A LA API EL JSON
@@ -92,7 +100,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
   prepareProductsOneByOne(listado: [][]) {
     listado.forEach(data => {
 
-      data.forEach((elemento, indice) => {
+      data.forEach((elemento: any, indice: number) => {
 
         switch (indice) {
           case 0:
@@ -113,6 +121,10 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
 
           case 4:
             this.product.Cantidad = elemento;
+            break
+
+          case 5:
+            this.product.CortaFecha = elemento;
             break
         }
 
@@ -160,7 +172,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
     });
   }
 
-  
+
   deleteProductById(id: string) {
     this.productService.deleteProduct(id).subscribe({
       next: (res) => {
@@ -189,12 +201,12 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
       },
       complete: () => this.convertJsonToExcel()
     })
-    
+
   }
 
   //GUARDAR JSON EN EXCEL
   convertJsonToExcel() {
-    
+
     this.deleteProductsOneByOne();
     this.dataSource.data.forEach((item: ProductApi) => {
       delete item._id;
@@ -220,7 +232,22 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
   updateProductById(id: string, amount: number) {
     let productAux: ProductApi = this.dataSource.data.filter((obj) => obj._id === id)[0];
     productAux.Cantidad = amount;
-    console.log(productAux)
+    this.productService.updateProduct(productAux).subscribe({
+      next: (res) => {
+        this.product = {};
+        this.ngOnInit();
+        console.info(res)
+      },
+      error: (err) => {
+        console.error(`Hemos tenido un error: ${err}`)
+      }
+    });
+  }
+
+  //Actualizar Corta Fecha
+  updateCortaFecha(id: string, amount: number) {
+    let productAux: ProductApi = this.dataSource.data.filter((obj) => obj._id === id)[0];
+    productAux.CortaFecha = amount;
     this.productService.updateProduct(productAux).subscribe({
       next: (res) => {
         this.product = {};

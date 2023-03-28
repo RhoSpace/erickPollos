@@ -21,7 +21,7 @@ export class SellerViewComponent implements OnInit {
   Validators.required, Validators.pattern("^[1-9]$")]);
 
   // Angular material table with pagination
-  displayedColumns: string[] = ['Producto', 'Cantidad', '_id',];
+  displayedColumns: string[] = ['Codigo', 'Cantidad', 'CortaFecha', '_id',];
   dataSource = new MatTableDataSource<ProductApi>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -38,6 +38,12 @@ export class SellerViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllProducts();
+  }
+
+  //Buscador
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   //Buscar datos en api conectada a la base de datos atlas mongodb 
