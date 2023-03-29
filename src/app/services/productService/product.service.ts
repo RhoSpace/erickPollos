@@ -9,7 +9,9 @@ import { ProductApi } from '../../models/product.model';
 export class ProductService {
 
   // private urlApi = 'http://localhost:9000/';
-  private urlApi = 'https://microserviciocrud-atlas-production.up.railway.app/';
+  // private urlApi = 'https://microserviciocrud-atlas-production.up.railway.app/';
+  private urlApi = 'https://api-pollos.onrender.com/'
+
   private http = inject(HttpClient); 
 
   constructor(
