@@ -16,7 +16,6 @@ import { Router } from '@angular/router';
 
 export class AdminViewComponent implements AfterViewInit, OnInit {
 
-  public showInput: boolean = true;
   public product: ProductApi | any = {};
   public multidimensionalReadExcel: [][] | undefined;
   public ExcelDataJson: any;
@@ -45,11 +44,6 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.getAllProducts()
-
-    // if(this.dataSource.data == undefined ){
-    //   this.showInput = false;
-    // }
-
   }
 
   //Buscador
@@ -89,9 +83,6 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
       this.prepareProductsOneByOne(copiaSinCabecera);
     };
     reader.readAsBinaryString(target.files[0]);
-
-    this.showInput = false;
-
   }
 
   //RECORRER EL ARREGLO PARA ENVIAR A LA API EL JSON

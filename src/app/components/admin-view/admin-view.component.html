@@ -4,7 +4,7 @@
     <button class="btn btn-secondary" (click)=doLogout()>Salir</button>
   </div>
 
-  <div *ngIf="showInput">
+  <div>
     <p>Importar archivo excel</p>
     <input type="file" (change)="onFileChange($event)" multiple="false" class="btn btn-secondary mb-3"
       info="Importar Excel" />
@@ -53,39 +53,39 @@
           <!-- Modal angular-bootstrap -->
           <ng-template #content let-modal>
             <div class="modal-header">
-              <h4 class="modal-title" id="modal-basic-title">{{element.Producto}}</h4>
+              <h4 class="modal-title" id="modal-basic-title"><strong class="modal--strong">{{element.Codigo}}</strong> {{element.Producto}}</h4>
               <button type="button" class="btn-close" aria-label="Close"
                 (click)="modal.dismiss('Cross click')"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body mb-5">
               <div class="row">
-
                 <div class="col-4">
                   <form class="container">
                     <p>Modificar Cantidad</p>
-                    <input type="number" name="nuevaCantidad" class="form-control" [formControl]="amountProductCtrl"
-                      [(ngModel)]="element.Cantidad" required>
-                    <hr>
-                    <button type="submit" class="mt-1 btn btn-primary"
-                      (click)="updateProductById(element._id, element.Cantidad);modal.close()">Actualizar</button>
+                      <div class="input-group">
+                          <button type="submit" class="mt-1 btn btn-primary"
+                          (click)="updateProductById(element._id, element.Cantidad);modal.close()">Actualizar</button>
+                          <input type="number" name="nuevaCantidad" class="form-control" [formControl]="amountProductCtrl"
+                          [(ngModel)]="element.Cantidad" required>
+                      </div>
                   </form>
-                </div>
-
-                <div class="col-4">
+              </div>
+              <div class="col-4">
                   <form class="container">
                     <p>Modificar Corta Fecha</p>
-                    <input type="number" name="nuevaCortaFecha" class="form-control" [formControl]="amountProductCtrl2"
-                      [(ngModel)]="element.CortaFecha" required>
-                    <hr>
-                    <button type="submit" class="mt-1 btn btn-primary"
-                      (click)="updateCortaFecha(element._id, element.CortaFecha);modal.close()">Actualizar</button>
+                      <div class="input-group">
+                          <button type="submit" class="mt-1 btn btn-primary"
+                          (click)="updateCortaFecha(element._id, element.CortaFecha);modal.close()">Actualizar</button>
+                          <input type="number" name="nuevaCortaFecha" class="form-control" [formControl]="amountProductCtrl2"
+                          [(ngModel)]="element.CortaFecha" required>
+                      </div>
                   </form>
-                </div>
+              </div>
 
                 <div class="col-4">
                   <p>Borrar Producto</p>
-                  <button mat-fab color="warn" aria-label="Delete"
+                  <button mat-mini-fab color="warn" aria-label="Delete"
                     (click)="deleteProductById(element._id);modal.close()">
                     <mat-icon>delete</mat-icon>
                   </button>

@@ -16,9 +16,13 @@ export class SellerViewComponent implements OnInit {
 
   public product: ProductApi | any = {};
   public amountProduct: number = 0;
+  public amountProduct2: number = 0;
 
   public amountProductCtrl: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
   Validators.required, Validators.pattern("^[1-9]$")]);
+
+  public amountProductCtrl2: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
+    Validators.required, Validators.pattern("^[1-9]$")]);
 
   // Angular material table with pagination
   displayedColumns: string[] = ['Codigo', 'Cantidad', 'CortaFecha', '_id',];
@@ -59,6 +63,7 @@ export class SellerViewComponent implements OnInit {
     })
   }
 
+  //CORREGIR NOMBRES
   getAllProductsFunction(id: string, sell: number) {
     this.productService.getAllProduct().subscribe({
       next: (res) => {
@@ -71,16 +76,40 @@ export class SellerViewComponent implements OnInit {
     })
   }
 
+  //CORREGIR NOMBRE
+  getAllProductsFunction2(id: string, sell: number) {
+    this.productService.getAllProduct().subscribe({
+      next: (res) => {
+        this.dataSource.data = res;
+      },
+      error: (err) => {
+        console.error(`Hemos tenido un error: ${err}`)
+      },
+      complete: () => this.updateProductCortaFecha(id, sell)
+    })
+  }
+
   //REFRESCAR INFORMACIÓN
   refresh(): void { window.location.reload(); }
 
   //actualizar
-  updateProduct(id: string, sell: number) {   
+  updateProduct(id: string, sell: number) {
     let productAux: ProductApi = this.dataSource.data.filter((obj) => obj._id === id)[0];
-    if(productAux.Cantidad<sell){
+    if (productAux.Cantidad < sell) {
       alert("La cantidad vendida supera a la de la bodega")
-    }else{
+    } else {
       productAux.Cantidad = productAux.Cantidad - sell;
+      this.updateProductById(productAux);
+    }
+  }
+
+  //actualizar Corta Fecha
+  updateProductCortaFecha(id: string, sell: number) {
+    let productAux: ProductApi = this.dataSource.data.filter((obj) => obj._id === id)[0];
+    if (productAux.CortaFecha < sell) {
+      alert("La cantidad vendida supera a la de la bodega")
+    } else {
+      productAux.CortaFecha = productAux.CortaFecha - sell;
       this.updateProductById(productAux);
     }
   }
