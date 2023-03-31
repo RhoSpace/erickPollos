@@ -28,7 +28,7 @@ export class SellerViewComponent implements OnInit {
   Validators.required, Validators.pattern("^[1-9]$")]);
 
   // Angular material table with pagination
-  displayedColumns: string[] = ['Nombre', 'Cantidad', 'CortaFecha', '_id',];
+  displayedColumns: string[] = ['Producto', 'Cantidad', 'CortaFecha', '_id',];
   dataSource = new MatTableDataSource<ProductApi>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
