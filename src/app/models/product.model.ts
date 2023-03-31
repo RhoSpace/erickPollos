@@ -3,7 +3,7 @@ export interface ProductApi {
     Linea: string;
     Codigo: string;
     Producto: string;
-    Precio: number;
+    Peso: number;
     Cantidad: number;
     CortaFecha: number;
 }

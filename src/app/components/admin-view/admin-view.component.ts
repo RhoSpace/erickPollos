@@ -7,6 +7,8 @@ import { ProductService } from 'src/app/services/productService/product.service'
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SaleService } from 'src/app/services/saleService/sale.service';
+import { SaleApi } from 'src/app/models/sale.model';
 
 @Component({
   selector: 'app-admin-view',
@@ -16,19 +18,21 @@ import { Router } from '@angular/router';
 
 export class AdminViewComponent implements AfterViewInit, OnInit {
 
-  public product: ProductApi | any = {};
-  public multidimensionalReadExcel: [][] | undefined;
-  public ExcelDataJson: any;
+  product: ProductApi | any = {};
+  multidimensionalReadExcel: [][] | undefined;
+  ExcelDataJson: any;
 
-  public amountProductCtrl: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
+  amountProductCtrl: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
+  Validators.required, Validators.pattern("^[1-9]$")]);
+  amountProductCtrl2: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
   Validators.required, Validators.pattern("^[1-9]$")]);
 
-  public amountProductCtrl2: FormControl = new FormControl('', [Validators.minLength(0), Validators.maxLength(5), Validators.required,
-    Validators.required, Validators.pattern("^[1-9]$")]);
-
   // Angular material table with pagination
-  displayedColumns: string[] = ['Linea', 'Codigo', 'Producto', 'Precio', 'Cantidad', 'CortaFecha', '_id',];
+  displayedColumns: string[] = ['Linea', 'Codigo', 'Producto', 'Peso', 'Cantidad', 'CortaFecha', '_id',];
   dataSource = new MatTableDataSource<ProductApi>([]);
+
+  allSales: SaleApi[] | undefined;
+  salesByProduct: SaleApi[] | undefined;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -39,11 +43,48 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
   constructor(
     private router: Router,
     private productService: ProductService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private saleService: SaleService,
   ) { }
 
   ngOnInit(): void {
-    this.getAllProducts()
+    this.getAllProducts();
+    this.getAllSales();
+    this.salesByProduct = undefined;
+  }
+
+  getAllSales() {
+    this.saleService.getAllSales().subscribe({
+      next: (res) => {
+        this.allSales = res;
+      },
+      error: (err) => {
+        console.error(`Hemos tenido un error: ${err}`);
+      },
+      complete: () => console.info("Realizado con exito")
+    })
+  }
+
+  //CAMINO A BUSCAR SALES ESPECIFICAS
+  getSalesById(id: string) {
+    this.saleService.getAllSales().subscribe({
+      next: (res) => {
+        this.allSales = res;
+      },
+      error: (err) => {
+        console.error(`Hemos tenido un error: ${err}`);
+      },
+      complete: () => this.getSales(id)
+    })
+  }
+
+  //OBTENER SALES ESPECIFICAS
+  getSales(id: string){
+    this.salesByProduct = this.allSales?.filter((sale: any) => {
+      if (sale?.productId == id) {
+        return sale;
+      }
+    })
   }
 
   //Buscador
@@ -107,7 +148,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
             break
 
           case 3:
-            this.product.Precio = elemento;
+            this.product.Peso = elemento;
             break
 
           case 4:
@@ -178,8 +219,10 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
     });
   }
 
-  //REFRESCAR INFORMACIÓN
-  refresh(): void { window.location.reload(); }
+  // //REFRESCAR INFORMACIÓN
+  refresh(): void { 
+    this.ngOnInit() 
+  }
 
   //ACTUALIZAR DATOS ANTES DE GUARDAR JSON A EXCEL
   downloadExcel() {
@@ -197,7 +240,7 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
 
   //GUARDAR JSON EN EXCEL
   convertJsonToExcel() {
-
+    this.deleteAllSales();
     this.deleteProductsOneByOne();
     this.dataSource.data.forEach((item: ProductApi) => {
       delete item._id;
@@ -268,5 +311,21 @@ export class AdminViewComponent implements AfterViewInit, OnInit {
     );
   }
 
+  deleteAllSales() {
+    this.allSales?.forEach((sale) => {
+      if(sale._id){this.deleteSale(sale._id);}
+    })
+  }
 
+  deleteSale(id: any) {
+    this.saleService.deleteSale(id).subscribe({
+        next: (res) => {
+          console.info(res);
+        },
+        error: (err) => {
+          console.error(`Hemos tenido un error: ${err}`);
+        },
+        complete: () => { }
+      })
+  }
 }

@@ -1,11 +1,16 @@
 <div class="container mt-3">
     <!-- <div class="header"> -->
     <H1>Vendedor</H1>
+    <input type="text" class="form-control" placeholder="Nombre Vendedor" [(ngModel)]="nameSeller" required>
     <!-- <button class="btn btn-secondary" (click)=doLogout()>Salir</button> -->
     <!-- </div> -->
 </div>
 <div class="container mt-3">
-    <input matInput (keyup)="applyFilter($event)" class="form-control input mb-2" placeholder="Buscar producto" #input>
+    <div class="input-group mb-2">
+        <span class="input-group-text" id="basic-addon1"><mat-icon>search</mat-icon></span>
+        <input matInput (keyup)="applyFilter($event)" class="form-control input" placeholder="Buscar producto"
+            #input>
+    </div>
     <div class="mat-elevation-z8">
         <table mat-table [dataSource]="dataSource">
 
@@ -31,7 +36,8 @@
                     <!-- Modal angular-bootstrap -->
                     <ng-template #content let-modal>
                         <div class="modal-header">
-                            <h4 class="modal-title" id="modal-basic-title"><strong class="modal--strong">{{element.Codigo}}</strong> {{element.Producto}} </h4>
+                            <h4 class="modal-title" id="modal-basic-title"><strong
+                                    class="modal--strong">{{element.Codigo}}</strong> {{element.Producto}} </h4>
                             <button type="button" class="btn-close" aria-label="Close"
                                 (click)="modal.dismiss('Cross click')"></button>
                         </div>
@@ -40,7 +46,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <p>Linea: {{element.Linea}}</p>
-                                    <p>Precio: ${{element.Precio}}</p>
+                                    <p>Peso: ${{element.Peso}}</p>
                                 </div>
                                 <div class="col-6">
                                     <p>Cantidad Actual: {{element.Cantidad}}</p>

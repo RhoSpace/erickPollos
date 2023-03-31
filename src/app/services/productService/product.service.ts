@@ -43,6 +43,4 @@ export class ProductService {
     let direction = this.urlApi + `api/products/${id}`;
     return this.http.get<ProductApi>(direction);
   }
-
-
 }
