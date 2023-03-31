@@ -8,8 +8,7 @@
 <div class="container mt-3">
     <div class="input-group mb-2">
         <span class="input-group-text" id="basic-addon1"><mat-icon>search</mat-icon></span>
-        <input matInput (keyup)="applyFilter($event)" class="form-control input" placeholder="Buscar producto"
-            #input>
+        <input matInput (keyup)="applyFilter($event)" class="form-control input" placeholder="Buscar producto" #input>
     </div>
     <div class="mat-elevation-z8">
         <table mat-table [dataSource]="dataSource">
@@ -58,7 +57,9 @@
                                         <p>Cantidad Vendida</p>
                                         <div class="input-group">
                                             <button type="submit" class="btn btn-primary"
-                                                (click)=" getAllProductsFunction(element._id, amountProduct);modal.close()">Actualizar</button>
+                                                (click)=" getAllProductsFunction(element._id, amountProduct);modal.close()"
+                                                [ngClass]="amountProductCtrl.invalid ? 'btn-secondary':'btn-primary' "
+                                                [disabled]="amountProductCtrl.invalid">Actualizar</button>
                                             <input type="number" class="form-control" placeholder="0000"
                                                 [formControl]="amountProductCtrl" aria-label="Input group"
                                                 aria-describedby="btnGroupAddon" [(ngModel)]="amountProduct" required>
@@ -70,7 +71,10 @@
                                         <p>Corta Fecha Vendido</p>
                                         <div class="input-group">
                                             <button type="submit" class="btn btn-primary"
-                                                (click)=" getAllProductsFunction2(element._id, amountProduct2);modal.close()">Actualizar</button>
+                                                (click)=" getAllProductsFunction2(element._id, amountProduct2);modal.close()"
+                                                [ngClass]="amountProductCtrl2.invalid ? 'btn-secondary':'btn-primary' "
+                                                [disabled]="amountProductCtrl2.invalid">
+                                                Actualizar</button>
                                             <input type="number" class="form-control" placeholder="0000"
                                                 [formControl]="amountProductCtrl2" aria-label="Input group"
                                                 aria-describedby="btnGroupAddon" [(ngModel)]="amountProduct2" required>
