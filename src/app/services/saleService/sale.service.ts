@@ -8,7 +8,8 @@ import { SaleApi } from '../../models/sale.model';
 })
 export class SaleService {
 
-  private urlApi = 'http://localhost:9000/';
+  // private urlApi = 'http://localhost:9000/';
+  private urlApi = 'https://api-pollos-sale.onrender.com/';
   private http = inject(HttpClient);
 
   constructor() { }
