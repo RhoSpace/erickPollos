@@ -21,11 +21,11 @@ export class SellerViewComponent implements OnInit {
   amountProduct2: number = 0;
   nameSeller: string = "";
 
-  amountProductCtrl: FormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(6), Validators.required,
-  Validators.required, Validators.pattern("^[1-9]+$")]);
+  amountProductCtrl: FormControl = new FormControl('', [Validators.min(1), Validators.max(999999), Validators.required,
+  Validators.required, Validators.pattern("^[0-9]+$")]);
 
-  amountProductCtrl2: FormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(6), Validators.required,
-  Validators.required, Validators.pattern("^[1-9]+$")]);
+  amountProductCtrl2: FormControl = new FormControl('', [Validators.min(1), Validators.max(999999), Validators.required,
+  Validators.required, Validators.pattern("^[0-9]+$")]);
 
   // Angular material table with pagination
   displayedColumns: string[] = ['Producto', 'Cantidad', 'CortaFecha', '_id',];
